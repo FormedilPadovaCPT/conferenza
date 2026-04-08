@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Richiesta Conferenza di Cantiere – Formedil Padova</title>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange: #E7500F;
+      --gray:   #565C66;
+      --green:  #95C22F;
+      --bg:     #f4f4f2;
+      --white:  #ffffff;
+      --border: #d4d2ca;
+      --text:   #2c2c2a;
+      --muted:  #5f5e5a;
+      --radius: 8px;
+      --shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+
+    body {
+      font-family: 'Barlow', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 0 0 60px;
+    }
+
+    /* ── BANNER ── */
+    .banner { width: 100%; max-height: 200px; overflow: hidden; display: block; }
+    .banner img { width: 100%; height: 200px; object-fit: cover; object-position: center 35%; display: block; }
+
+    /* ── CONTENITORE ── */
+    .container { max-width: 820px; margin: 0 auto; padding: 0 16px; }
+
+    /* ── CARD FORM ── */
+    .card {
+      background: var(--white);
+      border-radius: 0 0 var(--radius) var(--radius);
+      box-shadow: var(--shadow);
+      padding: 28px 32px 36px;
+    }
+
+    .form-title { border-bottom: 3px solid var(--orange); padding-bottom: 14px; margin-bottom: 20px; }
+    .form-title h1 { font-size: 18px; font-weight: 600; color: var(--text); }
+    .form-title p  { font-size: 12.5px; color: var(--muted); margin-top: 4px; }
+
+    /* ── INFO BOX ── */
+    .info-box {
+      border-left: 3px solid var(--orange);
+      background: #fdf3ee;
+      border-radius: 0 6px 6px 0;
+      padding: 12px 16px;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+    .info-box strong { color: var(--text); }
+
+    /* ── CONDIZIONI BOX ── */
+    .conditions-box {
+      background: #f9f8f5;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      margin-bottom: 6px;
+    }
+    .conditions-box p {
+      font-size: 12.5px; color: var(--muted); line-height: 1.75;
+    }
+    .conditions-box strong { color: var(--text); }
+
+    /* ── PROGRESS ── */
+    .prog-wrap { margin-bottom: 24px; }
+    .prog-label { font-size: 11.5px; color: var(--muted); margin-bottom: 5px; }
+    .prog-bar { height: 5px; background: #e0dfd8; border-radius: 3px; }
+    .prog-fill { height: 100%; background: var(--orange); border-radius: 3px; width: 0%; transition: width .35s ease; }
+
+    /* ── SEZIONE ── */
+    .section-title {
+      font-size: 10.5px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: .09em;
+      color: var(--orange);
+      border-bottom: 1px solid #e8e6e0;
+      padding-bottom: 6px;
+      margin: 28px 0 14px;
+    }
+
+    /* ── GRIGLIA ── */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+    .col-full { grid-column: 1 / -1; }
+
+    /* ── FIELD ── */
+    .field { display: flex; flex-direction: column; gap: 5px; }
+    label { font-size: 12px; font-weight: 500; color: var(--muted); }
+    label .req { color: var(--orange); margin-left: 2px; }
+
+    input[type=text], input[type=email], input[type=tel],
+    input[type=date], select, textarea {
+      font-family: 'Barlow', sans-serif;
+      font-size: 14px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px 11px;
+      background: #fff;
+      color: var(--text);
+      width: 100%;
+      transition: border-color .15s, box-shadow .15s;
+      -webkit-appearance: none;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--orange);
+      box-shadow: 0 0 0 3px rgba(231,80,15,.12);
+    }
+    input.err, select.err, textarea.err { border-color: #e24b4a; }
+    textarea { resize: vertical; min-height: 80px; }
+    select { cursor: pointer; }
+
+    /* ── TIPOLOGIA RICHIESTA ── */
+    .request-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 4px;
+    }
+    .request-card {
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 12px;
+      cursor: pointer;
+      transition: border-color .2s, background .2s;
+      position: relative;
+      text-align: center;
+    }
+    .request-card:hover { border-color: var(--orange); background: #fdf3ee; }
+    .request-card input[type=checkbox] {
+      position: absolute; opacity: 0; width: 0; height: 0;
+    }
+    .request-card.selected {
+      border-color: var(--orange);
+      background: #fdf3ee;
+    }
+    .request-card.selected::after {
+      content: '✓';
+      position: absolute; top: 6px; right: 8px;
+      font-size: 11px; color: var(--orange); font-weight: 700;
+    }
+    .request-card .rc-icon { font-size: 22px; display: block; margin-bottom: 8px; }
+    .request-card .rc-label { font-size: 12.5px; font-weight: 600; color: var(--text); line-height: 1.4; }
+    .request-card .rc-sub { font-size: 11px; color: var(--muted); margin-top: 3px; }
+    .request-err { font-size: 11.5px; color: #e24b4a; display: none; margin-top: 6px; }
+
+    /* ── CANTIERE BOX ── */
+    .cantiere-box {
+      background: #f9f8f5;
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-top: 4px;
+    }
+
+    /* ── PRIVACY ── */
+    .privacy-box {
+      margin-top: 24px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      display: flex; gap: 12px; align-items: flex-start;
+      background: #fafaf8;
+    }
+    .privacy-box input[type=checkbox] {
+      margin-top: 3px; flex-shrink: 0;
+      accent-color: var(--orange);
+      width: 16px; height: 16px; cursor: pointer;
+    }
+    .privacy-box p { font-size: 12px; color: var(--muted); line-height: 1.7; }
+    .privacy-box a { color: var(--orange); text-decoration: none; }
+    .privacy-box a:hover { text-decoration: underline; }
+
+    /* ── BOTTONI ── */
+    .btn-row { display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px; }
+    .btn-reset {
+      font-family: 'Barlow', sans-serif; font-size: 14px; font-weight: 500;
+      padding: 10px 20px; border-radius: 6px; cursor: pointer;
+      border: 1px solid var(--border); background: transparent; color: var(--muted);
+      transition: background .15s;
+    }
+    .btn-reset:hover { background: #f0efe9; }
+    .btn-send {
+      font-family: 'Barlow', sans-serif; font-size: 14px; font-weight: 600;
+      padding: 10px 28px; border-radius: 6px; cursor: pointer;
+      background: var(--orange); color: #fff; border: none;
+      transition: opacity .15s, transform .1s;
+    }
+    .btn-send:hover:not(:disabled) { opacity: .88; }
+    .btn-send:active:not(:disabled) { transform: scale(.98); }
+    .btn-send:disabled { opacity: .4; cursor: default; }
+
+    /* ── SPINNER ── */
+    .spinner {
+      display: inline-block; width: 14px; height: 14px;
+      border: 2px solid rgba(255,255,255,.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      vertical-align: middle; margin-right: 6px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── BANNER SUCCESSO ── */
+    .success-banner {
+      display: none;
+      background: #eaf3de; border: 1px solid var(--green);
+      border-radius: var(--radius); padding: 20px;
+      text-align: center; margin-top: 24px; color: #3b6d11;
+    }
+    .success-banner h2 { font-size: 17px; margin-bottom: 6px; }
+    .success-banner p  { font-size: 13px; line-height: 1.6; }
+
+    /* ── BANNER ERRORE ── */
+    .error-banner {
+      display: none;
+      background: #fcebeb; border: 1px solid #e24b4a;
+      border-radius: var(--radius); padding: 14px 16px;
+      margin-top: 16px; color: #a32d2d; font-size: 13px;
+    }
+
+    /* ── FOOTER ── */
+    .footer {
+      margin-top: 24px; text-align: center;
+      font-size: 11.5px; color: #aaa; line-height: 1.7;
+    }
+    .footer a { color: var(--orange); text-decoration: none; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      .card { padding: 20px 16px 28px; }
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      .col-full { grid-column: 1; }
+      .request-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- BANNER -->
+  <div class="banner">
+    <img src="CONFERENZA_DI_CANTIERE.png" alt="Formedil Padova – Conferenza di Cantiere">
+  </div>
+
+  <!-- CARD FORM -->
+  <div class="card">
+
+    <div class="form-title">
+      <h1>Richiesta di una Conferenza di Cantiere</h1>
+      <p>Sopralluogo tecnico gratuito &nbsp;·&nbsp; Formazione e Informazione in cantiere</p>
+    </div>
+
+    <div class="info-box">
+      Il servizio è <strong>completamente gratuito</strong> per i dipendenti delle imprese iscritte alla
+      <strong>Cassa Edile di Mutualità e Assistenza Interprovinciale del Veneto – CEIV</strong> –
+      in regola con i versamenti e previa autorizzazione da parte della direzione.
+    </div>
+
+    <div class="prog-wrap">
+      <div class="prog-label" id="progLabel">Compilazione: 0%</div>
+      <div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
+    </div>
+
+    <form id="cantForm" novalidate>
+
+      <!-- ── 1. DATI AZIENDALI ── -->
+      <div class="section-title">Dati aziendali</div>
+      <div class="grid-2">
+        <div class="field col-full">
+          <label for="ragione_sociale">Ragione sociale <span class="req">*</span></label>
+          <input type="text" id="ragione_sociale" name="ragione_sociale" placeholder="Denominazione impresa" required>
+        </div>
+        <div class="field">
+          <label for="codice_ceiv">Codice iscrizione CEIV <span class="req">*</span></label>
+          <input type="text" id="codice_ceiv" name="codice_ceiv" placeholder="es. PD-000000" required>
+        </div>
+        <div class="field">
+          <label for="piva">Partita IVA <span class="req">*</span></label>
+          <input type="text" id="piva" name="piva" placeholder="es. 01234567890" required>
+        </div>
+        <div class="field">
+          <label for="cf_impresa">Codice fiscale impresa <small style="font-weight:400">(se diverso dalla P.IVA)</small></label>
+          <input type="text" id="cf_impresa" name="cf_impresa" placeholder="es. RSSMRA80A01L781V" style="text-transform:uppercase">
+        </div>
+        <div class="field">
+          <label for="telefono">Telefono <span class="req">*</span></label>
+          <input type="tel" id="telefono" name="telefono" placeholder="049 000000" required>
+        </div>
+        <div class="field">
+          <label for="cellulare">Cellulare</label>
+          <input type="tel" id="cellulare" name="cellulare" placeholder="333 0000000">
+        </div>
+        <div class="field col-full">
+          <label for="email">E-mail <span class="req">*</span></label>
+          <input type="email" id="email" name="email"
+                 placeholder="info@impresa.it" required>
+          <small style="font-size:11px;color:var(--muted)">
+            Indirizzo a cui saranno inviate tutte le comunicazioni relative al servizio richiesto.
+          </small>
+        </div>
+      </div>
+
+      <!-- ── 2. SEDE LEGALE ── -->
+      <div class="section-title">Sede legale</div>
+      <div class="grid-2">
+        <div class="field col-full">
+          <label for="indirizzo_legale">Indirizzo sede legale <span class="req">*</span></label>
+          <input type="text" id="indirizzo_legale" name="indirizzo_legale" placeholder="Via / Piazza, numero civico" required>
+        </div>
+        <div class="field col-full">
+          <label for="indirizzo_amm">Indirizzo sede amministrativa <small style="font-weight:400">(se diversa dalla sede legale)</small></label>
+          <input type="text" id="indirizzo_amm" name="indirizzo_amm" placeholder="Via / Piazza, numero civico">
+        </div>
+      </div>
+
+      <!-- ── 3. RAPPRESENTANTE LEGALE ── -->
+      <div class="section-title">Rappresentante legale</div>
+      <div class="grid-2">
+        <div class="field">
+          <label for="rl_nome">Nome <span class="req">*</span></label>
+          <input type="text" id="rl_nome" name="rl_nome" placeholder="Nome" required>
+        </div>
+        <div class="field">
+          <label for="rl_cognome">Cognome <span class="req">*</span></label>
+          <input type="text" id="rl_cognome" name="rl_cognome" placeholder="Cognome" required>
+        </div>
+      </div>
+
+      <!-- ── 4. RSPP ── -->
+      <div class="section-title">RSPP</div>
+      <div class="field">
+        <label for="rspp_ruolo">Ruolo RSPP <span class="req">*</span></label>
+        <select id="rspp_ruolo" name="rspp_ruolo" required>
+          <option value="">— seleziona —</option>
+          <option value="Il responsabile del servizio di prevenzione e protezione è il datore di lavoro">Il responsabile è il datore di lavoro</option>
+          <option value="Il responsabile del servizio di prevenzione e protezione è un dipendente dell'impresa">Il responsabile è un dipendente dell'impresa</option>
+          <option value="Il responsabile del servizio di prevenzione e protezione è un soggetto esterno all'impresa">Il responsabile è un soggetto esterno all'impresa</option>
+        </select>
+      </div>
+
+      <!-- ── 5. TIPOLOGIA RICHIESTA ── -->
+      <div class="section-title">Tipologia richiesta</div>
+
+      <div class="conditions-box">
+        <p>
+          <strong>Condizioni del servizio</strong><br>
+          1 – La data verrà concordata con la direzione tecnica di Formedil Padova.<br>
+          2 – L'impresa deve essere iscritta alla C.E.I.V. (con posizione regolare).<br>
+          3 – L'impresa deve garantire la presenza di un proprio referente durante le conferenze di cantiere.
+        </p>
+      </div>
+
+      <div style="margin-top:14px">
+        <label style="margin-bottom:8px;display:block">
+          Seleziona il tipo di servizio richiesto <span class="req">*</span>
+        </label>
+        <div class="request-grid" id="requestGrid">
+          <div class="request-card" data-value="Conferenza di cantiere" onclick="toggleCard(this)">
+            <input type="checkbox" name="tipo_richiesta" value="Conferenza di cantiere">
+            <span class="rc-icon">🏗️</span>
+            <div class="rc-label">Conferenza<br>di cantiere</div>
+            <div class="rc-sub">Sopralluogo tecnico</div>
+          </div>
+          <div class="request-card" data-value="Informazione in cantiere" onclick="toggleCard(this)">
+            <input type="checkbox" name="tipo_richiesta" value="Informazione in cantiere">
+            <span class="rc-icon">📋</span>
+            <div class="rc-label">Informazione<br>in cantiere</div>
+            <div class="rc-sub">Normativa e sicurezza</div>
+          </div>
+          <div class="request-card" data-value="Formazione in cantiere" onclick="toggleCard(this)">
+            <input type="checkbox" name="tipo_richiesta" value="Formazione in cantiere">
+            <span class="rc-icon">🎓</span>
+            <div class="rc-label">Formazione<br>in cantiere</div>
+            <div class="rc-sub">Percorso formativo</div>
+          </div>
+        </div>
+        <div class="request-err" id="requestErr">Selezionare almeno un tipo di richiesta.</div>
+      </div>
+
+      <!-- ── 6. LOCALIZZAZIONE CANTIERE ── -->
+      <div class="section-title">Localizzazione del cantiere</div>
+      <div class="cantiere-box">
+        <div class="grid-2">
+          <div class="field col-full">
+            <label for="indirizzo_cantiere">Indirizzo del cantiere <span class="req">*</span></label>
+            <input type="text" id="indirizzo_cantiere" name="indirizzo_cantiere"
+                   placeholder="Via / Piazza, numero civico" required>
+          </div>
+          <div class="field col-full">
+            <label for="comune_cantiere">Comune cantiere <span class="req">*</span></label>
+            <select id="comune_cantiere" name="comune_cantiere" required>
+              <option value="">— seleziona comune —</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 7. REFERENTE SOPRALLUOGO ── -->
+      <div class="section-title">Referente per il sopralluogo</div>
+      <div class="grid-3">
+        <div class="field">
+          <label for="ref_cognome">Cognome <span class="req">*</span></label>
+          <input type="text" id="ref_cognome" name="ref_cognome" placeholder="Cognome" required>
+        </div>
+        <div class="field">
+          <label for="ref_nome">Nome <span class="req">*</span></label>
+          <input type="text" id="ref_nome" name="ref_nome" placeholder="Nome" required>
+        </div>
+        <div class="field">
+          <label for="ref_cell">Cellulare <span class="req">*</span></label>
+          <input type="tel" id="ref_cell" name="ref_cell" placeholder="333 0000000" required>
+        </div>
+      </div>
+
+      <!-- ── 8. NOTE ── -->
+      <div class="section-title">Note e/o altre richieste</div>
+      <div class="field">
+        <textarea id="note" name="note" placeholder="Eventuali note o altre richieste..."></textarea>
+      </div>
+
+      <!-- ── PRIVACY ── -->
+      <div class="privacy-box">
+        <input type="checkbox" id="privacy" name="privacy" required>
+        <p>
+          <strong>Autorizzazione al trattamento dei dati – D.Lgs. 196/2003 e GDPR (Reg. UE 2016/679)</strong><br>
+          Con l'invio del presente modulo autorizzo il trattamento dei dati personali come previsto dal
+          Decreto Legislativo n. 196 del 30/06/2003 e successive modificazioni. Ai sensi dell'art. 13
+          D.Lgs. n. 196/2003, i dati saranno conservati nel data base informatico di Formedil Padova
+          e utilizzati esclusivamente per la gestione del servizio richiesto.<br>
+          L'informativa completa è consultabile sul sito
+          <a href="https://www.formedilpadova.it" target="_blank">www.formedilpadova.it</a>.
+        </p>
+      </div>
+
+      <!-- ── BOTTONI ── -->
+      <div class="btn-row">
+        <button type="button" class="btn-reset" onclick="resetForm()">Cancella</button>
+        <button type="submit" class="btn-send" id="btnSend" disabled>Invia richiesta</button>
+      </div>
+
+      <div class="error-banner" id="errorBanner">
+        Si è verificato un errore durante l'invio. Riprova tra qualche istante o contatta
+        <a href="/cdn-cgi/l/email-protection#5033202410363f223d3534393c2031343f26317e3924"><span class="__cf_email__" data-cfemail="bddecdc9fddbd2cfd0d8d9d4d1cddcd9d2cbdc93d4c9">[email&#160;protected]</span></a>.
+      </div>
+
+      <div class="success-banner" id="successBanner">
+        <h2>✓ Richiesta inviata con successo</h2>
+        <p>
+          Formedil Padova – Area Sicurezza e Salute ha ricevuto la vostra richiesta di
+          Conferenza di Cantiere.<br>
+          Riceverete a breve una e-mail di conferma all'indirizzo indicato. Il nostro ufficio
+          vi contatterà per concordare data e modalità del sopralluogo.
+        </p>
+      </div>
+
+    </form>
+
+    <div class="footer">
+      <a href="https://www.formedilpadova.it" target="_blank">www.formedilpadova.it</a>
+      &nbsp;·&nbsp; Formedil Padova – Scuola Costruzioni Giuseppe Jappelli
+      &nbsp;·&nbsp; Area Sicurezza e Salute
+      &nbsp;·&nbsp; Via Basilicata 10, 35127 Padova
+      &nbsp;·&nbsp; Tel. 049 761168
+    </div>
+
+  </div><!-- /card -->
+</div><!-- /container -->
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// ── COMUNI PROVINCIA DI PADOVA ──────────────────────────────────────────────
+const COMUNI = [
+  "ABANO TERME","AGNA","ALBIGNASEGO","ANGUILLARA VENETA","ARQUA' PETRARCA","ARRE",
+  "ARZERGRANDE","BAGNOLI DI SOPRA","BAONE","BARBONA","BATTAGLIA TERME","BOARA PISANI",
+  "BORGO VENETO","BORGORICCO","BOVOLENTA","BRUGINE","CADONEGHE","CAMPO SAN MARTINO",
+  "CAMPODARSEGO","CAMPODORO","CAMPOSAMPIERO","CANDIANA","CARCERI","CARMIGNANO DI BRENTA",
+  "CARRARA SAN GIORGIO","CARRARA SANTO STEFANO","CARTURA","CASALE DI SCODOSIA",
+  "CASALSERUGO","CASTELBALDO","CERVARESE SANTA CROCE","CINTO EUGANEO","CITTADELLA",
+  "CODEVIGO","CONSELVE","CORREZZOLA","CURTAROLO","DUE CARRARE","ESTE","FONTANIVA",
+  "GALLIERA VENETA","GALZIGNANO TERME","GAZZO PADOVANO","GRANTORTO","GRANZE","LEGNARO",
+  "LIMENA","LOREGGIA","LOZZO ATESTINO","MASERA' DI PADOVA","MASI","MASSANZAGO",
+  "MEGLIADINO SAN FIDENZIO","MEGLIADINO SAN VITALE","MERLARA","MESTRINO","MONSELICE",
+  "MONTAGNANA","MONTEGROTTO TERME","NOVENTA PADOVANA","OSPEDALETTO EUGANEO",
+  "PADOVA - Q1 (Centro storico)",
+  "PADOVA - Q2 NORD (Arcella - S. Carlo – Pontevigodarzere)",
+  "PADOVA - Q3 EST (Brenta - Venezia, Forcellini - Camin)",
+  "PADOVA - Q4 SUD EST (S. Croce-S. Osvaldo, Bassanello – Voltabarozzo)",
+  "PADOVA - Q5 SUD OVEST (Armistizio – Savonarola)",
+  "PADOVA - Q6 OVEST (Brentella – Valsugana)",
+  "PERNUMIA","PIACENZA D'ADIGE","PIAZZOLA SUL BRENTA","PIOMBINO DESE","PIOVE DI SACCO",
+  "POLVERARA","PONSO","PONTE SAN NICOLO'","PONTELONGO","POZZONOVO","ROVOLON","RUBANO",
+  "SACCOLONGO","SALETTO","SAN GIORGIO DELLE PERTICHE","SAN GIORGIO IN BOSCO",
+  "SAN MARTINO DI LUPARI","SAN PIETRO IN GU","SAN PIETRO VIMINARIO",
+  "SANT'ANGELO DI PIOVE DI SACCO","SANT'ELENA","SANT'URBANO","SANTA GIUSTINA IN COLLE",
+  "SANTA MARGHERITA D'ADIGE","SAONARA","SELVAZZANO DENTRO","SOLESINO","STANGHELLA",
+  "TEOLO","TERRASSA PADOVANA","TOMBOLO","TORREGLIA","TREBASELEGHE","TRIBANO","URBANA",
+  "VEGGIANO","VESCOVANA","VIGHIZZOLO D'ESTE","VIGODARZERE","VIGONZA","VILLA DEL CONTE",
+  "VILLA ESTENSE","VILLAFRANCA PADOVANA","VILLANOVA DI CAMPOSAMPIERO","VO'"
+];
+
+fillSelect(document.getElementById('comune_cantiere'));
+
+function fillSelect(sel) {
+  COMUNI.forEach(c => {
+    const o = document.createElement('option');
+    o.value = c; o.textContent = c;
+    sel.appendChild(o);
+  });
+}
+
+// ── CARDS TIPOLOGIA RICHIESTA ──────────────────────────────────────────────
+function toggleCard(card) {
+  card.classList.toggle('selected');
+  const cb = card.querySelector('input[type=checkbox]');
+  cb.checked = card.classList.contains('selected');
+  calcProgress();
+}
+
+function getSelectedRequests() {
+  return Array.from(document.querySelectorAll('#requestGrid .request-card.selected'))
+              .map(c => c.dataset.value);
+}
+
+// ── PROGRESS ─────────────────────────────────────────────────────────────────
+const form      = document.getElementById('cantForm');
+const btnSend   = document.getElementById('btnSend');
+const progFill  = document.getElementById('progFill');
+const progLabel = document.getElementById('progLabel');
+const reqFields = form.querySelectorAll('[required]:not(input[name=tipo_richiesta])');
+
+function calcProgress() {
+  let n = 0;
+  let total = reqFields.length + 1; // +1 per tipo_richiesta
+
+  reqFields.forEach(el => {
+    if (el.type === 'checkbox') { if (el.checked) n++; }
+    else if (el.value.trim()) n++;
+  });
+
+  // Conta la selezione richiesta
+  if (getSelectedRequests().length > 0) n++;
+
+  const pct = Math.round(n / total * 100);
+  progFill.style.width = pct + '%';
+  progLabel.textContent = 'Compilazione: ' + pct + '%';
+  btnSend.disabled = !document.getElementById('privacy').checked;
+}
+
+form.addEventListener('input',  calcProgress);
+form.addEventListener('change', calcProgress);
+
+// ── SUBMIT ────────────────────────────────────────────────────────────────────
+// ⚠️  Sostituire con l'URL del Web App Google Apps Script dopo il deploy
+const GAS_URL = 'https://script.google.com/macros/s/INSERISCI_QUI_IL_TUO_GAS_URL/exec';
+
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+
+  // Validazione campi standard
+  let ok = true;
+  reqFields.forEach(el => {
+    el.classList.remove('err');
+    if (el.type === 'checkbox') { /* gestito dal btn disabled */ }
+    else if (!el.value.trim()) { el.classList.add('err'); ok = false; }
+  });
+
+  // Validazione tipo richiesta
+  const tipiSelezionati = getSelectedRequests();
+  const reqErr = document.getElementById('requestErr');
+  if (tipiSelezionati.length === 0) {
+    reqErr.style.display = 'block';
+    ok = false;
+  } else {
+    reqErr.style.display = 'none';
+  }
+
+  if (!ok) {
+    const first = form.querySelector('.err') || document.getElementById('requestGrid');
+    if (first) first.scrollIntoView({ behavior:'smooth', block:'center' });
+    return;
+  }
+
+  // Spinner
+  btnSend.disabled = true;
+  btnSend.innerHTML = '<span class="spinner"></span>Invio in corso...';
+  document.getElementById('errorBanner').style.display = 'none';
+
+  // Payload
+  const payload = {
+    timestamp:          new Date().toISOString(),
+    ragione_sociale:    document.getElementById('ragione_sociale').value.trim(),
+    codice_ceiv:        document.getElementById('codice_ceiv').value.trim(),
+    piva:               document.getElementById('piva').value.trim(),
+    cf_impresa:         document.getElementById('cf_impresa').value.trim().toUpperCase(),
+    telefono:           document.getElementById('telefono').value.trim(),
+    cellulare:          document.getElementById('cellulare').value.trim(),
+    email:              document.getElementById('email').value.trim(),
+    indirizzo_legale:   document.getElementById('indirizzo_legale').value.trim(),
+    indirizzo_amm:      document.getElementById('indirizzo_amm').value.trim(),
+    rl_nome:            document.getElementById('rl_nome').value.trim(),
+    rl_cognome:         document.getElementById('rl_cognome').value.trim(),
+    rspp_ruolo:         document.getElementById('rspp_ruolo').value,
+    tipo_richiesta:     tipiSelezionati.join(', '),
+    indirizzo_cantiere: document.getElementById('indirizzo_cantiere').value.trim(),
+    comune_cantiere:    document.getElementById('comune_cantiere').value,
+    ref_cognome:        document.getElementById('ref_cognome').value.trim(),
+    ref_nome:           document.getElementById('ref_nome').value.trim(),
+    ref_cell:           document.getElementById('ref_cell').value.trim(),
+    note:               document.getElementById('note').value.trim(),
+    privacy:            'Sì – autorizzo il trattamento dei dati personali'
+  };
+
+  try {
+    const resp = await fetch(GAS_URL, {
+      method: 'POST',
+      body:   JSON.stringify(payload)
+    });
+    const data = await resp.json();
+
+    if (data.status === 'ok') {
+      document.getElementById('successBanner').style.display = 'block';
+      btnSend.textContent = 'Inviata ✓';
+      progFill.style.width = '100%';
+      progLabel.textContent = 'Compilazione: 100%';
+      document.getElementById('successBanner').scrollIntoView({ behavior:'smooth' });
+    } else {
+      throw new Error(data.message || 'Errore sconosciuto');
+    }
+  } catch (err) {
+    console.error(err);
+    document.getElementById('errorBanner').style.display = 'block';
+    btnSend.disabled = false;
+    btnSend.textContent = 'Invia richiesta';
+  }
+});
+
+// ── RESET ─────────────────────────────────────────────────────────────────────
+function resetForm() {
+  form.reset();
+  document.querySelectorAll('.request-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('requestErr').style.display = 'none';
+  document.getElementById('successBanner').style.display = 'none';
+  document.getElementById('errorBanner').style.display   = 'none';
+  btnSend.disabled     = 
